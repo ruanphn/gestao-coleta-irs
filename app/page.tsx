@@ -19,9 +19,19 @@ export default function PortalPage() {
         <div className="absolute -bottom-20 right-1/3 w-72 h-72 bg-teal-400 rounded-full opacity-10 blur-3xl" />
       </div>
 
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-start py-8 px-4">
+      <div className="relative z-10 min-h-screen flex flex-col items-center justify-start py-8 px-4 w-full">
+        {/* Admin Navigation Button */}
+        <div className="w-full max-w-2xl flex justify-end mb-4">
+          <a
+            href="/admin"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/15 text-white rounded-xl text-xs font-semibold backdrop-blur-md transition-all hover:scale-[1.02]"
+          >
+            <span>🔐</span> Painel Administrativo
+          </a>
+        </div>
+
         {/* Header */}
-        <header className="w-full max-w-lg mb-8 text-center flex flex-col items-center">
+        <header className="w-full max-w-2xl mb-8 text-center flex flex-col items-center">
           <div className="inline-flex items-center justify-center p-4 bg-white/10 backdrop-blur-sm rounded-2xl mb-4 border border-white/20">
             <Logo light showText={true} />
           </div>
@@ -43,7 +53,7 @@ export default function PortalPage() {
         </header>
 
         {/* Form Card */}
-        <div className="w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden">
+        <div className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden">
           {/* Card header */}
           <div className="bg-green-700 px-8 py-5">
             <h2 className="text-white font-bold text-lg">Solicitação de Descarte</h2>

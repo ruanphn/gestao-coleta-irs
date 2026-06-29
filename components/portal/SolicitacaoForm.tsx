@@ -173,29 +173,24 @@ export default function SolicitacaoForm() {
       <div>
         <label className="block text-sm font-semibold text-gray-700 mb-2">Tipo de Solicitante</label>
         <div className="grid grid-cols-2 gap-3">
+          <input type="hidden" {...register('tipo')} />
           {(['PF', 'PJ'] as const).map((t) => (
-            <label
+            <button
+              type="button"
               key={t}
+              onClick={() => {
+                setValue('tipo', t, { shouldValidate: true });
+                setValue('cpf_cnpj', '');
+              }}
               className={`relative flex items-center justify-center p-4 rounded-xl border-2 cursor-pointer transition-all ${
                 tipo === t
                   ? 'border-green-600 bg-green-50 text-green-700'
                   : 'border-gray-200 text-gray-500 hover:border-gray-300'
               }`}
             >
-              <input
-                type="radio"
-                value={t}
-                {...register('tipo', {
-                  onChange: () => {
-                    // Reset fields to avoid mixing masks
-                    setValue('cpf_cnpj', '');
-                  }
-                })}
-                className="sr-only"
-              />
               <span className="font-bold text-lg mr-2">{t === 'PF' ? '👤' : '🏢'}</span>
               <span className="font-semibold">{t === 'PF' ? 'Pessoa Física' : 'Pessoa Jurídica'}</span>
-            </label>
+            </button>
           ))}
         </div>
       </div>
