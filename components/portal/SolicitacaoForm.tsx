@@ -5,15 +5,55 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
+const formatCPF = (val: string) => {
+  const digits = val.replace(/\D/g, '').slice(0, 11);
+  return digits
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+};
+
+const formatCNPJ = (val: string) => {
+  const digits = val.replace(/\D/g, '').slice(0, 14);
+  return digits
+    .replace(/(\d{2})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1/$2')
+    .replace(/(\d{4})(\d{1,2})$/, '$1-$2');
+};
+
+const formatTelefone = (val: string) => {
+  const digits = val.replace(/\D/g, '').slice(0, 11);
+  if (digits.length <= 10) {
+    return digits
+      .replace(/(\d{2})(\d)/, '($1) $2')
+      .replace(/(\d{4})(\d{1,4})$/, '$1-$2');
+  }
+  return digits
+    .replace(/(\d{2})(\d)/, '($1) $2')
+    .replace(/(\d{5})(\d{1,4})$/, '$1-$2');
+};
+
+const formatCEP = (val: string) => {
+  const digits = val.replace(/\D/g, '').slice(0, 8);
+  return digits.replace(/(\d{5})(\d)/, '$1-$2');
+};
+
 const schema = z.object({
   nome: z.string().min(3, 'Nome deve ter ao menos 3 caracteres'),
   tipo: z.enum(['PF', 'PJ'] as const),
-  cpf_cnpj: z.string().min(11, 'CPF/CNPJ inválido'),
+  cpf_cnpj: z.string().refine((val) => {
+    const clean = val.replace(/\D/g, '');
+    return clean.length === 11 || clean.length === 14;
+  }, 'CPF (11 dígitos) ou CNPJ (14 dígitos) inválido'),
   endereco: z.string().min(5, 'Informe o endereço completo'),
   cidade: z.string().min(2, 'Informe a cidade'),
-  estado: z.string().length(2, 'Use a sigla do estado (ex: SP)'),
-  cep: z.string().min(8, 'CEP inválido'),
-  telefone: z.string().min(10, 'Telefone inválido'),
+  estado: z.string().length(2, 'Use a sigla do estado (ex: CE)'),
+  cep: z.string().refine((val) => val.replace(/\D/g, '').length === 8, 'CEP deve ter 8 dígitos'),
+  telefone: z.string().refine((val) => {
+    const len = val.replace(/\D/g, '').length;
+    return len === 10 || len === 11;
+  }, 'Telefone deve ter 10 ou 11 dígitos'),
   email: z.string().email('E-mail inválido'),
   descricao_material: z.string().min(10, 'Descreva os materiais com ao menos 10 caracteres'),
 });
@@ -34,6 +74,7 @@ export default function SolicitacaoForm() {
     watch,
     formState: { errors },
     reset,
+    setValue,
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: { tipo: 'PF' },
@@ -52,6 +93,14 @@ export default function SolicitacaoForm() {
   const onSubmit = async (data: FormData) => {
     setSubmitState('loading');
     setErrorMessage('');
+
+    // Clean formatting characters before sending to API
+    const cleanData = {
+      ...data,
+      cpf_cnpj: data.cpf_cnpj.replace(/\D/g, ''),
+      telefone: data.telefone.replace(/\D/g, ''),
+      cep: data.cep.replace(/\D/g, ''),
+    };
 
     try {
       let imagem_url: string | undefined;
@@ -74,7 +123,7 @@ export default function SolicitacaoForm() {
       const res = await fetch('/api/solicitacoes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...data, imagem_url }),
+        body: JSON.stringify({ ...cleanData, imagem_url }),
       });
 
       if (!res.ok) {
@@ -136,7 +185,12 @@ export default function SolicitacaoForm() {
               <input
                 type="radio"
                 value={t}
-                {...register('tipo')}
+                {...register('tipo', {
+                  onChange: () => {
+                    // Reset fields to avoid mixing masks
+                    setValue('cpf_cnpj', '');
+                  }
+                })}
                 className="sr-only"
               />
               <span className="font-bold text-lg mr-2">{t === 'PF' ? '👤' : '🏢'}</span>
@@ -166,8 +220,13 @@ export default function SolicitacaoForm() {
           {tipo === 'PF' ? 'CPF' : 'CNPJ'}
         </label>
         <input
-          {...register('cpf_cnpj')}
+          {...register('cpf_cnpj', {
+            onChange: (e) => {
+              e.target.value = tipo === 'PF' ? formatCPF(e.target.value) : formatCNPJ(e.target.value);
+            }
+          })}
           type="text"
+          maxLength={tipo === 'PF' ? 14 : 18}
           placeholder={tipo === 'PF' ? '000.000.000-00' : '00.000.000/0001-00'}
           className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all bg-gray-50 placeholder-gray-400"
         />
@@ -193,7 +252,7 @@ export default function SolicitacaoForm() {
           <input
             {...register('cidade')}
             type="text"
-            placeholder="São Paulo"
+            placeholder="Fortaleza"
             className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all bg-gray-50 placeholder-gray-400"
           />
           {errors.cidade && <p className="mt-1 text-xs text-red-500">{errors.cidade.message}</p>}
@@ -204,7 +263,7 @@ export default function SolicitacaoForm() {
             {...register('estado')}
             type="text"
             maxLength={2}
-            placeholder="SP"
+            placeholder="CE"
             className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all bg-gray-50 placeholder-gray-400 uppercase"
           />
           {errors.estado && <p className="mt-1 text-xs text-red-500">{errors.estado.message}</p>}
@@ -212,9 +271,14 @@ export default function SolicitacaoForm() {
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-1.5">CEP</label>
           <input
-            {...register('cep')}
+            {...register('cep', {
+              onChange: (e) => {
+                e.target.value = formatCEP(e.target.value);
+              }
+            })}
             type="text"
-            placeholder="00000-000"
+            maxLength={9}
+            placeholder="60000-000"
             className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all bg-gray-50 placeholder-gray-400"
           />
           {errors.cep && <p className="mt-1 text-xs text-red-500">{errors.cep.message}</p>}
@@ -226,9 +290,14 @@ export default function SolicitacaoForm() {
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-1.5">Telefone / WhatsApp</label>
           <input
-            {...register('telefone')}
+            {...register('telefone', {
+              onChange: (e) => {
+                e.target.value = formatTelefone(e.target.value);
+              }
+            })}
             type="tel"
-            placeholder="(11) 99999-9999"
+            maxLength={15}
+            placeholder="(85) 99999-9999"
             className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all bg-gray-50 placeholder-gray-400"
           />
           {errors.telefone && <p className="mt-1 text-xs text-red-500">{errors.telefone.message}</p>}

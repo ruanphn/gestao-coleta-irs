@@ -7,6 +7,7 @@ import StatsBar from '@/components/admin/StatsBar';
 import KanbanBoard from '@/components/admin/KanbanBoard';
 import PontosColetaManager from '@/components/admin/PontosColetaManager';
 import VeiculosManager from '@/components/admin/VeiculosManager';
+import Logo from '@/components/ui/Logo';
 
 type Tab = 'kanban' | 'pontos' | 'veiculos';
 
@@ -101,13 +102,7 @@ export default function DashboardPage() {
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-green-600/20 rounded-xl border border-green-500/30 flex items-center justify-center">
-              <span className="text-lg">♻️</span>
-            </div>
-            <div className="hidden sm:block">
-              <p className="text-white font-bold text-sm leading-none">Gestão de Coleta</p>
-              <p className="text-gray-500 text-xs">Instituto Robótica Sustentável</p>
-            </div>
+            <Logo light showText={true} />
           </div>
 
           {/* Search */}

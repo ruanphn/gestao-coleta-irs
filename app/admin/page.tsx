@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+import Logo from '@/components/ui/Logo';
+
 export default function AdminLoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -38,12 +40,11 @@ export default function AdminLoginPage() {
 
       <div className="relative w-full max-w-sm">
         {/* Logo */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-green-600/20 backdrop-blur-sm rounded-2xl border border-green-500/30 mb-4">
-            <span className="text-3xl">♻️</span>
+        <div className="text-center mb-8 flex flex-col items-center">
+          <div className="inline-flex items-center justify-center p-4 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 mb-4">
+            <Logo light showText={true} />
           </div>
-          <h1 className="text-2xl font-bold text-white">Painel Administrativo</h1>
-          <p className="text-gray-400 text-sm mt-1">Instituto Robótica Sustentável</p>
+          <h1 className="text-xl font-bold text-white mt-2">Painel Administrativo</h1>
         </div>
 
         {/* Card */}

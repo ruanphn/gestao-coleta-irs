@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import SolicitacaoForm from '@/components/portal/SolicitacaoForm';
 
+import Logo from '@/components/ui/Logo';
+
 export const metadata: Metadata = {
   title: 'Solicitação de Descarte — Instituto Robótica Sustentável',
   description:
@@ -19,14 +21,11 @@ export default function PortalPage() {
 
       <div className="relative z-10 min-h-screen flex flex-col items-center justify-start py-8 px-4">
         {/* Header */}
-        <header className="w-full max-w-lg mb-8 text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-white/10 backdrop-blur-sm rounded-2xl mb-4 border border-white/20">
-            <span className="text-3xl">♻️</span>
+        <header className="w-full max-w-lg mb-8 text-center flex flex-col items-center">
+          <div className="inline-flex items-center justify-center p-4 bg-white/10 backdrop-blur-sm rounded-2xl mb-4 border border-white/20">
+            <Logo light showText={true} />
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">
-            Instituto Robótica Sustentável
-          </h1>
-          <p className="text-green-200 text-base">
+          <p className="text-green-200 text-sm mt-1">
             Descarte correto de lixo eletrônico — rápido e gratuito
           </p>
 

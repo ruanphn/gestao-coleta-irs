@@ -3,6 +3,15 @@
 -- Schema SQL para Supabase (PostgreSQL)
 -- =====================================================
 
+-- Limpeza caso já existam (Idempotente)
+DROP TABLE IF EXISTS solicitacoes CASCADE;
+DROP TABLE IF EXISTS clientes CASCADE;
+DROP TABLE IF EXISTS pontos_coleta CASCADE;
+DROP TABLE IF EXISTS veiculos_rotas CASCADE;
+DROP TYPE IF EXISTS tipo_cliente CASCADE;
+DROP TYPE IF EXISTS status_solicitacao CASCADE;
+DROP TYPE IF EXISTS turno_agendamento CASCADE;
+
 -- Habilita extensão para UUIDs
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
@@ -100,41 +109,81 @@ CREATE INDEX idx_solicitacoes_cliente_id ON solicitacoes(cliente_id);
 CREATE INDEX idx_solicitacoes_created_at ON solicitacoes(created_at DESC);
 
 -- ─────────────────────────────────────────────
--- 7. SEED: Pontos de Coleta Iniciais
+-- 7. SEED: Pontos de Coleta Iniciais (Fortaleza - CE)
 -- ─────────────────────────────────────────────
 INSERT INTO pontos_coleta (nome, endereco, cidade, estado, cep, horario_funcionamento) VALUES
   (
-    'Ponto Coleta Centro',
-    'Rua das Flores, 100 — Centro',
-    'São Paulo',
-    'SP',
-    '01000-000',
-    'Seg–Sex: 08h–18h | Sáb: 08h–13h'
+    'Ninna Hub',
+    'Av. Dom Manuel, 1020 — Centro',
+    'Fortaleza',
+    'CE',
+    '60060-090',
+    'Seg–Sex: 08h–18h'
   ),
   (
-    'Ponto Coleta Zona Sul',
-    'Av. Santo Amaro, 450 — Ibirapuera',
-    'São Paulo',
-    'SP',
-    '04001-000',
-    'Seg–Sex: 09h–17h'
+    'Sede Robótica Sustentável',
+    'Rua Francisquinha Portela, 1050 c Altos',
+    'Fortaleza',
+    'CE',
+    '60351-840',
+    'Seg–Sex: 08h–17h'
   ),
   (
-    'Ponto Coleta Zona Norte',
-    'Rua Voluntários da Pátria, 220 — Santana',
-    'São Paulo',
-    'SP',
-    '02010-000',
-    'Seg–Sex: 08h–17h | Sáb: 09h–12h'
+    'ALECE',
+    'Av. Des. Moreira, 2807 — Dionísio Torres',
+    'Fortaleza',
+    'CE',
+    '60170-173',
+    'Seg–Sex: 08h–17h'
+  ),
+  (
+    'Super Mercadinhos São Luiz',
+    'Av. Oliveira Paiva, 170 — Cidade dos Funcionários',
+    'Fortaleza',
+    'CE',
+    '60822-310',
+    'Seg–Sex: 07h–22h | Dom: 07h–20h'
+  ),
+  (
+    'Transforme Coworking',
+    'Rua Torres Câmara, 600 — Casa 47 — Aldeota',
+    'Fortaleza',
+    'CE',
+    '60150-060',
+    'Seg–Sex: 08h–18h'
+  ),
+  (
+    'IEL Ceará',
+    'Av. Barão de Studart, 1980 — Mezanino — Aldeota',
+    'Fortaleza',
+    'CE',
+    '60120-001',
+    'Seg–Sex: 08h–17h'
+  ),
+  (
+    'SINDIVERDE',
+    'Av. Barão de Studart, 1980 — 1º ANDAR — Aldeota',
+    'Fortaleza',
+    'CE',
+    '60120-001',
+    'Seg–Sex: 08h–17h'
+  ),
+  (
+    'Unifametro',
+    'R. Carneiro da Cunha, 180 — Jacarecanga',
+    'Fortaleza',
+    'CE',
+    '60010-470',
+    'Seg–Sex: 08h–22h | Sáb: 08h–12h'
   );
 
 -- ─────────────────────────────────────────────
--- 8. SEED: Veículos Iniciais
+-- 8. SEED: Veículos Iniciais (Fortaleza)
 -- ─────────────────────────────────────────────
 INSERT INTO veiculos_rotas (placa, nome, capacidade_kg) VALUES
-  ('ABC-1234', 'Caminhão Verde 01', 1000),
-  ('DEF-5678', 'Van Sustentável 02', 500),
-  ('GHI-9012', 'Caminhão Verde 03', 1500);
+  ('OSV-2026', 'Caminhão Coleta 01', 1200),
+  ('NUX-4321', 'Van Reciclagem 02', 600),
+  ('PMG-9876', 'Caminhão Caçamba 03', 2000);
 
 -- ─────────────────────────────────────────────
 -- 9. RLS (Row Level Security) - Supabase
@@ -165,6 +214,3 @@ CREATE POLICY "clientes_public_insert"
 CREATE POLICY "solicitacoes_public_insert"
   ON solicitacoes FOR INSERT
   WITH CHECK (TRUE);
-
--- Nota: GET e UPDATE das solicitacoes são feitos pela service_role_key no backend,
--- que bypassa RLS automaticamente. Não precisa de policy para o admin.
