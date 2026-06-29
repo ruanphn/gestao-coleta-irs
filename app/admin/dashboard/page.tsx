@@ -57,7 +57,7 @@ export default function DashboardPage() {
     router.replace('/admin');
   };
 
-  // Gerar URL do Google Maps com waypoints dos PJs agendados
+  // Gerar URL do Google Maps com waypoints dos PJs agendados partindo da sede
   const handleGerarRota = () => {
     const pjAgendados = solicitacoes.filter(
       (s) => s.cliente?.tipo === 'PJ' && s.status === 'agendado'
@@ -68,12 +68,13 @@ export default function DashboardPage() {
       return;
     }
 
+    const sede = encodeURIComponent('R. Francisquinha Portela, 1055 - Quintino Cunha, Fortaleza - CE, 60351-840');
     const enderecos = pjAgendados.map((s) =>
       encodeURIComponent(`${s.cliente.endereco}, ${s.cliente.cidade}, ${s.cliente.estado}`)
     );
 
     let url = 'https://www.google.com/maps/dir/';
-    url += enderecos.join('/');
+    url += `${sede}/${enderecos.join('/')}`;
     window.open(url, '_blank');
   };
 

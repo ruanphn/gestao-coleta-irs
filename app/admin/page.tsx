@@ -13,6 +13,7 @@ export default function AdminLoginPage() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!password) return;
     setLoading(true);
     setError('');
 
@@ -75,7 +76,7 @@ export default function AdminLoginPage() {
 
             <button
               type="submit"
-              disabled={loading || !password}
+              disabled={loading}
               className="w-full bg-green-600 hover:bg-green-500 disabled:bg-gray-700 disabled:text-gray-500 text-white font-semibold py-3 rounded-xl transition-all flex items-center justify-center gap-2"
             >
               {loading ? (
