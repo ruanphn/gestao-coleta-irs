@@ -57,7 +57,7 @@ export default function DashboardPage() {
     router.replace('/admin');
   };
 
-  // Gerar URL do Google Maps com waypoints dos PJs agendados partindo da sede
+  // Gerar URL do Google Maps com waypoints dos PJs agendados partindo da sede (otimizado por CEP)
   const handleGerarRota = () => {
     const pjAgendados = solicitacoes.filter(
       (s) => s.cliente?.tipo === 'PJ' && s.status === 'agendado'
@@ -68,8 +68,16 @@ export default function DashboardPage() {
       return;
     }
 
+    // Ordena as coletas pelo CEP do cliente numéricamente
+    // CEPs sequenciais/próximos indicam proximidade geográfica (heurística de otimização de rota offline)
+    const pjOrdenados = [...pjAgendados].sort((a, b) => {
+      const cepA = parseInt((a.cliente?.cep || '').replace(/\D/g, ''), 10) || 0;
+      const cepB = parseInt((b.cliente?.cep || '').replace(/\D/g, ''), 10) || 0;
+      return cepA - cepB;
+    });
+
     const sede = encodeURIComponent('R. Francisquinha Portela, 1055 - Quintino Cunha, Fortaleza - CE, 60351-840');
-    const enderecos = pjAgendados.map((s) =>
+    const enderecos = pjOrdenados.map((s) =>
       encodeURIComponent(`${s.cliente.endereco}, ${s.cliente.cidade}, ${s.cliente.estado}`)
     );
 

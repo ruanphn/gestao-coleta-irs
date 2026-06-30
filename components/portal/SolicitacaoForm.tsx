@@ -57,6 +57,9 @@ const schema = z.object({
   }, 'Telefone deve ter 10 ou 11 dígitos'),
   email: z.string().email('E-mail inválido'),
   descricao_material: z.string().min(10, 'Descreva os materiais com ao menos 10 caracteres'),
+  termo_aceite: z.literal(true, {
+    message: 'Você deve aceitar o termo de consentimento da LGPD para continuar',
+  }),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -406,6 +409,24 @@ export default function SolicitacaoForm() {
             )}
           </label>
         </div>
+      </div>
+
+      {/* Termo LGPD */}
+      <div className="bg-gray-50 border border-gray-100 rounded-xl p-4 space-y-2">
+        <div className="flex items-start gap-3">
+          <input
+            type="checkbox"
+            id="termo_aceite"
+            {...register('termo_aceite')}
+            className="mt-1 h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500 cursor-pointer"
+          />
+          <label htmlFor="termo_aceite" className="text-xs text-gray-500 leading-relaxed cursor-pointer">
+            Estou ciente e dou meu consentimento para que o <strong>Instituto Robótica Sustentável</strong> colete e trate os dados pessoais preenchidos neste formulário (como nome, contato e endereço) com a finalidade exclusiva de planejar, agendar e executar a coleta de resíduos eletrônicos solicitada, bem como emitir a respectiva declaração de destinação ambiental, em total conformidade com a <strong>Lei Geral de Proteção de Dados (LGPD - Lei nº 13.709/18)</strong>.
+          </label>
+        </div>
+        {errors.termo_aceite && (
+          <p className="text-xs text-red-500 font-medium pl-7">⚠️ {errors.termo_aceite.message as string}</p>
+        )}
       </div>
 
       {/* Error message */}

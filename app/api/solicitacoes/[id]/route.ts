@@ -27,17 +27,45 @@ export async function GET(
   return NextResponse.json(data);
 }
 
-// PATCH /api/solicitacoes/[id] — Atualiza status, agendamento, etc.
+// PATCH /api/solicitacoes/[id] — Atualiza status, agendamento, dados de cliente, etc.
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const body: AtualizarSolicitacaoPayload = await request.json();
+  const { cliente, ...solicitacaoData } = await request.json();
+
+  // Se houver dados de cliente no corpo da requisição, atualiza a tabela 'clientes' primeiro
+  if (cliente) {
+    const { data: solData, error: fetchError } = await supabaseAdmin
+      .from('solicitacoes')
+      .select('cliente_id')
+      .eq('id', id)
+      .single();
+
+    if (fetchError || !solData) {
+      return NextResponse.json(
+        { error: 'Solicitação não encontrada para atualização de cliente.' },
+        { status: 404 }
+      );
+    }
+
+    const { error: clientError } = await supabaseAdmin
+      .from('clientes')
+      .update(cliente)
+      .eq('id', solData.cliente_id);
+
+    if (clientError) {
+      return NextResponse.json(
+        { error: `Erro ao atualizar dados do cliente: ${clientError.message}` },
+        { status: 500 }
+      );
+    }
+  }
 
   const { data, error } = await supabaseAdmin
     .from('solicitacoes')
-    .update(body)
+    .update(solicitacaoData)
     .eq('id', id)
     .select(`
       *,

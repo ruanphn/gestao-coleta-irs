@@ -94,4 +94,5 @@ export interface AtualizarSolicitacaoPayload {
   turno?: TurnoAgendamento;
   observacoes?: string;
   declaracao_enviada?: boolean;
+  descricao_material?: string;
 }
