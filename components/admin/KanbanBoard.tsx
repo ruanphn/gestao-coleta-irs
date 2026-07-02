@@ -10,53 +10,76 @@ interface KanbanBoardProps {
   onUpdate: (updated: SolicitacaoComCliente) => void;
 }
 
-const COLUNAS: { status: StatusSolicitacao; label: string; icon: string; color: string; border: string; header: string }[] = [
+interface ColunaConfig {
+  id: string;
+  label: string;
+  icon: string;
+  color: string;
+  border: string;
+  header: string;
+  filter: (s: SolicitacaoComCliente) => boolean;
+}
+
+const COLUNAS: ColunaConfig[] = [
   {
-    status: 'pendente',
-    label: 'Pendentes',
+    id: 'pf',
+    label: 'Coletas Pessoa Física',
+    icon: '👤',
+    color: 'bg-sky-50/50',
+    border: 'border-sky-200',
+    header: 'bg-sky-100 border-sky-200',
+    filter: (s) => s.cliente?.tipo === 'PF',
+  },
+  {
+    id: 'pendente',
+    label: 'Pendentes (PJ)',
     icon: '🕐',
     color: 'bg-amber-50',
     border: 'border-amber-200',
     header: 'bg-amber-100 border-amber-200',
+    filter: (s) => s.cliente?.tipo === 'PJ' && s.status === 'pendente',
   },
   {
-    status: 'em_analise',
-    label: 'Em Análise',
+    id: 'em_analise',
+    label: 'Em Análise (PJ)',
     icon: '🔍',
     color: 'bg-blue-50',
     border: 'border-blue-200',
     header: 'bg-blue-100 border-blue-200',
+    filter: (s) => s.cliente?.tipo === 'PJ' && s.status === 'em_analise',
   },
   {
-    status: 'agendado',
-    label: 'Agendados',
+    id: 'agendado',
+    label: 'Agendados (PJ)',
     icon: '📅',
     color: 'bg-purple-50',
     border: 'border-purple-200',
     header: 'bg-purple-100 border-purple-200',
+    filter: (s) => s.cliente?.tipo === 'PJ' && s.status === 'agendado',
   },
   {
-    status: 'concluido',
-    label: 'Concluídos',
+    id: 'concluido',
+    label: 'Concluídos (PJ)',
     icon: '✅',
     color: 'bg-green-50',
     border: 'border-green-200',
     header: 'bg-green-100 border-green-200',
+    filter: (s) => s.cliente?.tipo === 'PJ' && s.status === 'concluido',
   },
 ];
 
 export default function KanbanBoard({ solicitacoes, pontosColeta, veiculos, onUpdate }: KanbanBoardProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
       {COLUNAS.map((coluna) => {
-        const cards = solicitacoes.filter((s) => s.status === coluna.status);
+        const cards = solicitacoes.filter(coluna.filter);
         return (
-          <div key={coluna.status} className={`rounded-2xl border ${coluna.border} ${coluna.color} flex flex-col min-h-[200px]`}>
+          <div key={coluna.id} className={`rounded-2xl border ${coluna.border} ${coluna.color} flex flex-col min-h-[200px]`}>
             {/* Column header */}
             <div className={`px-4 py-3 rounded-t-2xl border-b ${coluna.header} flex items-center justify-between`}>
               <div className="flex items-center gap-2">
                 <span>{coluna.icon}</span>
-                <span className="font-bold text-gray-700 text-sm">{coluna.label}</span>
+                <span className="font-bold text-gray-700 text-sm whitespace-nowrap">{coluna.label}</span>
               </div>
               <span className="bg-white/70 text-gray-600 font-bold text-xs px-2 py-0.5 rounded-full">
                 {cards.length}

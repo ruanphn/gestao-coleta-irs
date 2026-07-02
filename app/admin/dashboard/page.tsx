@@ -5,11 +5,12 @@ import { useRouter } from 'next/navigation';
 import { SolicitacaoComCliente, PontoColeta, Veiculo } from '@/lib/types';
 import StatsBar from '@/components/admin/StatsBar';
 import KanbanBoard from '@/components/admin/KanbanBoard';
+import DashboardStats from '@/components/admin/DashboardStats';
 import PontosColetaManager from '@/components/admin/PontosColetaManager';
 import VeiculosManager from '@/components/admin/VeiculosManager';
 import Logo from '@/components/ui/Logo';
 
-type Tab = 'kanban' | 'pontos' | 'veiculos';
+type Tab = 'kanban' | 'dashboard' | 'pontos' | 'veiculos';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -100,6 +101,7 @@ export default function DashboardPage() {
 
   const TABS: { id: Tab; label: string; icon: string }[] = [
     { id: 'kanban',  label: 'Solicitações', icon: '📋' },
+    { id: 'dashboard', label: 'Dashboard', icon: '📊' },
     { id: 'pontos',  label: 'Pontos de Coleta', icon: '📍' },
     { id: 'veiculos', label: 'Veículos', icon: '🚛' },
   ];
@@ -234,6 +236,14 @@ export default function DashboardPage() {
                   onUpdate={handleUpdate}
                 />
               </>
+            )}
+
+            {activeTab === 'dashboard' && (
+              <DashboardStats
+                solicitacoes={filteredSolicitacoes}
+                pontosColeta={pontosColeta}
+                veiculos={veiculos}
+              />
             )}
 
             {activeTab === 'pontos' && (

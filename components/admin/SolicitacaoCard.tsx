@@ -45,6 +45,12 @@ export default function SolicitacaoCard({
   const { cliente } = solicitacao;
   const isPF = cliente.tipo === 'PF';
 
+  const getWhatsAppLink = (phone: string) => {
+    const cleanPhone = phone.replace(/\D/g, '');
+    const phoneWithDDI = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
+    return `https://wa.me/${phoneWithDDI}`;
+  };
+
   const updateStatus = async (newStatus: StatusSolicitacao) => {
     if (newStatus === 'concluido') {
       // Special flow: send declaration + mark as done
@@ -131,7 +137,23 @@ export default function SolicitacaoCard({
                 {STATUS_OPTIONS.find((s) => s.value === solicitacao.status)?.label}
               </span>
             </div>
-            <p className="font-semibold text-gray-900 text-sm mt-1.5 truncate">{cliente.nome}</p>
+            <div className="flex items-center gap-1.5 mt-1.5">
+              <p className="font-semibold text-gray-900 text-sm truncate max-w-[180px]" title={cliente.nome}>
+                {cliente.nome}
+              </p>
+              <a
+                href={getWhatsAppLink(cliente.telefone)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center p-1 rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition-colors shadow-sm"
+                title={`Iniciar conversa no WhatsApp: ${cliente.telefone}`}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.73-1.45L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.42 9.864-9.858.002-2.634-1.013-5.11-2.861-6.958C16.672 1.94 14.197.924 11.564.924c-5.438 0-9.861 4.417-9.865 9.858-.002 1.81.474 3.58 1.38 5.148L2.08 21.92l6.096-1.602c1.554.847 3.23 1.293 4.871 1.293zm9.64-5.263c-.302-.15-1.787-.88-2.067-.98-.28-.1-.486-.15-.688.15s-.585.73-.717.88c-.132.15-.264.17-.565.02-1.396-.7-2.3-1.258-3.21-2.82-.24-.41-.24-.668-.06-.888.162-.2.302-.35.452-.53.15-.18.2-.3.3-.5.1-.2.05-.38-.025-.53s-.688-1.66-.943-2.27c-.248-.597-.5-.515-.688-.525-.177-.01-.38-.01-.585-.01-.205 0-.537.077-.817.38-.28.3-.923.903-.923 2.203s.945 2.553 1.077 2.733c.132.18 1.86 2.84 4.505 3.98.63.27 1.12.43 1.5.55.637.2 1.217.17 1.677.1 1.12-.17 1.788-.73 1.788-1.365 0-.63-.302-.93-.604-1.08z"/>
+                </svg>
+              </a>
+            </div>
             <p className="text-gray-400 text-xs">{dataFormatada}</p>
           </div>
           <button
@@ -159,7 +181,20 @@ export default function SolicitacaoCard({
               </div>
               <div>
                 <p className="text-gray-400 font-semibold uppercase tracking-wide">Telefone</p>
-                <p className="text-gray-700">{cliente.telefone}</p>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <span className="text-gray-700">{cliente.telefone}</span>
+                  <a
+                    href={getWhatsAppLink(cliente.telefone)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center p-1 rounded-md bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition-colors"
+                    title="Conversar no WhatsApp"
+                  >
+                    <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.73-1.45L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.42 9.864-9.858.002-2.634-1.013-5.11-2.861-6.958C16.672 1.94 14.197.924 11.564.924c-5.438 0-9.861 4.417-9.865 9.858-.002 1.81.474 3.58 1.38 5.148L2.08 21.92l6.096-1.602c1.554.847 3.23 1.293 4.871 1.293zm9.64-5.263c-.302-.15-1.787-.88-2.067-.98-.28-.1-.486-.15-.688.15s-.585.73-.717.88c-.132.15-.264.17-.565.02-1.396-.7-2.3-1.258-3.21-2.82-.24-.41-.24-.668-.06-.888.162-.2.302-.35.452-.53.15-.18.2-.3.3-.5.1-.2.05-.38-.025-.53s-.688-1.66-.943-2.27c-.248-.597-.5-.515-.688-.525-.177-.01-.38-.01-.585-.01-.205 0-.537.077-.817.38-.28.3-.923.903-.923 2.203s.945 2.553 1.077 2.733c.132.18 1.86 2.84 4.505 3.98.63.27 1.12.43 1.5.55.637.2 1.217.17 1.677.1 1.12-.17 1.788-.73 1.788-1.365 0-.63-.302-.93-.604-1.08z"/>
+                    </svg>
+                  </a>
+                </div>
               </div>
               <div className="col-span-2">
                 <p className="text-gray-400 font-semibold uppercase tracking-wide">Endereço</p>
