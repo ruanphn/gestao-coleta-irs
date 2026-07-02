@@ -16,10 +16,10 @@ interface SolicitacaoCardProps {
 }
 
 const STATUS_OPTIONS: { value: StatusSolicitacao; label: string }[] = [
-  { value: 'pendente',   label: '🕐 Pendente' },
-  { value: 'em_analise', label: '🔍 Em Análise' },
-  { value: 'agendado',   label: '📅 Agendado' },
-  { value: 'concluido',  label: '✅ Concluído' },
+  { value: 'pendente',   label: 'Pendente' },
+  { value: 'em_analise', label: 'Em Análise' },
+  { value: 'agendado',   label: 'Agendado' },
+  { value: 'concluido',  label: 'Concluído' },
 ];
 
 const STATUS_COLORS: Record<StatusSolicitacao, string> = {
@@ -128,12 +128,22 @@ export default function SolicitacaoCard({
         <div className="px-4 py-3 flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold border ${
+              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold border ${
                 isPF ? 'bg-sky-50 text-sky-700 border-sky-200' : 'bg-orange-50 text-orange-700 border-orange-200'
               }`}>
-                {isPF ? '👤 PF' : '🏢 PJ'}
+                {isPF ? (
+                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                ) : (
+                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011-1v5m-4 0h4" />
+                  </svg>
+                )}
+                {isPF ? 'PF' : 'PJ'}
               </span>
-              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${STATUS_COLORS[solicitacao.status]}`}>
+              <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium border ${STATUS_COLORS[solicitacao.status]}`}>
+                <span className="w-1.5 h-1.5 rounded-full bg-current"></span>
                 {STATUS_OPTIONS.find((s) => s.value === solicitacao.status)?.label}
               </span>
             </div>
@@ -257,25 +267,35 @@ export default function SolicitacaoCard({
               {isPF && solicitacao.status === 'em_analise' && (
                 <button
                   onClick={() => setShowModalPF(true)}
-                  className="flex-1 py-2 text-xs rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors"
+                  className="flex-1 py-2 text-xs rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors flex items-center justify-center gap-1"
                 >
-                  📍 Indicar Ponto
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  Indicar Ponto
                 </button>
               )}
               {!isPF && solicitacao.status === 'em_analise' && (
                 <button
                   onClick={() => setShowModalPJ(true)}
-                  className="flex-1 py-2 text-xs rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-semibold transition-colors"
+                  className="flex-1 py-2 text-xs rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-semibold transition-colors flex items-center justify-center gap-1"
                 >
-                  📅 Agendar Coleta
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  Agendar Coleta
                 </button>
               )}
               {solicitacao.status === 'agendado' && (
                 <button
                   onClick={() => setShowModalDeclaracao(true)}
-                  className="flex-1 py-2 text-xs rounded-lg bg-green-600 hover:bg-green-700 text-white font-semibold transition-colors flex items-center justify-center gap-1.5"
+                  className="flex-1 py-2 text-xs rounded-lg bg-green-600 hover:bg-green-700 text-white font-semibold transition-colors flex items-center justify-center gap-1"
                 >
-                  📄 Visualizar & Concluir
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Visualizar & Concluir
                 </button>
               )}
             </div>
@@ -285,13 +305,23 @@ export default function SolicitacaoCard({
         {/* Concluded badge */}
         {solicitacao.status === 'concluido' && (
           <div className="border-t border-green-100 px-4 py-3 bg-green-50">
-            <p className="text-green-600 text-xs font-medium flex items-center gap-1">
+            <div className="text-green-600 text-xs font-medium flex items-center gap-1.5">
               {solicitacao.declaracao_enviada ? (
-                <><span>📧</span> Declaração enviada ao cliente</>
+                <>
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 19v-8.93a2 2 0 01.89-1.664l8-5.333a2 2 0 012.22 0l8 5.333A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-2.25-1.5a2 2 0 00-2.22 0l-2.25 1.5" />
+                  </svg>
+                  <span>Declaração enviada ao cliente</span>
+                </>
               ) : (
-                <><span>✅</span> Concluído</>
+                <>
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>Concluído</span>
+                </>
               )}
-            </p>
+            </div>
           </div>
         )}
       </div>

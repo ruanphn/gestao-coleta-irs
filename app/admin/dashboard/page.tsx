@@ -99,11 +99,45 @@ export default function DashboardPage() {
     );
   });
 
-  const TABS: { id: Tab; label: string; icon: string }[] = [
-    { id: 'kanban',  label: 'Solicitações', icon: '📋' },
-    { id: 'dashboard', label: 'Dashboard', icon: '📊' },
-    { id: 'pontos',  label: 'Pontos de Coleta', icon: '📍' },
-    { id: 'veiculos', label: 'Veículos', icon: '🚛' },
+  const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
+    {
+      id: 'kanban',
+      label: 'Solicitações',
+      icon: (
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+        </svg>
+      )
+    },
+    {
+      id: 'dashboard',
+      label: 'Dashboard',
+      icon: (
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 8v8m-4-5v5m-4-2v2M2 12a10 10 0 1120 0 10 10 0 01-20 0z" />
+        </svg>
+      )
+    },
+    {
+      id: 'pontos',
+      label: 'Pontos de Coleta',
+      icon: (
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+      )
+    },
+    {
+      id: 'veiculos',
+      label: 'Veículos',
+      icon: (
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1" />
+        </svg>
+      )
+    },
   ];
 
   return (
@@ -111,38 +145,39 @@ export default function DashboardPage() {
       {/* Top navbar */}
       <header className="bg-gray-900 border-b border-gray-800 sticky top-0 z-40">
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-          {/* Logo */}
-          <div className="flex items-center gap-3">
-            <Logo light showText={true} />
+          {/* Logo (Aligned Left) */}
+          <div className="flex items-center flex-1 justify-start">
+            <Logo light showText={false} className="lg:hidden" />
+            <Logo light showText={true} className="hidden lg:inline-flex" />
           </div>
 
-          {/* Search */}
-          {activeTab === 'kanban' && (
-            <div className="flex-1 max-w-md hidden sm:block">
-              <div className="relative">
-                <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                <input
-                  type="text"
-                  placeholder="Buscar por nome, e-mail, CPF/CNPJ..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-xl text-gray-200 placeholder-gray-600 text-sm focus:outline-none focus:ring-1 focus:ring-green-500"
-                />
-              </div>
-            </div>
-          )}
+          {/* Tab Navigation (Centered) */}
+          <nav className="flex items-center justify-center gap-1 whitespace-nowrap overflow-x-auto scrollbar-none py-1">
+            {TABS.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl transition-colors ${
+                  activeTab === tab.id
+                    ? 'text-green-400 bg-green-500/10'
+                    : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800'
+                }`}
+              >
+                {tab.icon}
+                <span className="hidden md:inline">{tab.label}</span>
+              </button>
+            ))}
+          </nav>
 
-          {/* Actions */}
-          <div className="flex items-center gap-2">
+          {/* Actions (Aligned Right) */}
+          <div className="flex items-center gap-2 flex-1 justify-end flex-shrink-0">
             {/* Gerar Rota button */}
             <button
               onClick={handleGerarRota}
-              className="hidden sm:flex items-center gap-1.5 px-3 py-2 bg-green-700 hover:bg-green-600 text-white text-xs font-semibold rounded-xl transition-colors"
+              className="flex items-center gap-1.5 px-3 py-2 bg-green-700 hover:bg-green-600 text-white text-xs font-semibold rounded-xl transition-colors"
             >
               <span>🗺️</span>
-              <span>Gerar Rota</span>
+              <span className="hidden sm:inline">Gerar Rota</span>
             </button>
 
             {/* Refresh */}
@@ -168,24 +203,6 @@ export default function DashboardPage() {
             </button>
           </div>
         </div>
-
-        {/* Tab bar */}
-        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 flex gap-1 pb-0">
-          {TABS.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-t-lg transition-colors border-b-2 ${
-                activeTab === tab.id
-                  ? 'text-green-400 border-green-500 bg-green-500/5'
-                  : 'text-gray-500 border-transparent hover:text-gray-300'
-              }`}
-            >
-              <span>{tab.icon}</span>
-              <span className="hidden sm:inline">{tab.label}</span>
-            </button>
-          ))}
-        </div>
       </header>
 
       {/* Main content */}
@@ -204,29 +221,13 @@ export default function DashboardPage() {
           <>
             {activeTab === 'kanban' && (
               <>
-                {/* Mobile search */}
-                <div className="sm:hidden">
-                  <input
-                    type="text"
-                    placeholder="Buscar por nome, e-mail..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-                  />
-                </div>
-
-                {/* Mobile gerar rota */}
-                <div className="sm:hidden">
-                  <button
-                    onClick={handleGerarRota}
-                    className="w-full flex items-center justify-center gap-2 py-3 bg-green-700 hover:bg-green-600 text-white text-sm font-semibold rounded-xl transition-colors"
-                  >
-                    🗺️ Gerar Rota PJs Agendados
-                  </button>
-                </div>
 
                 {/* Stats */}
-                <StatsBar solicitacoes={filteredSolicitacoes} />
+                <StatsBar
+                  solicitacoes={filteredSolicitacoes}
+                  searchQuery={searchQuery}
+                  setSearchQuery={setSearchQuery}
+                />
 
                 {/* Kanban */}
                 <KanbanBoard

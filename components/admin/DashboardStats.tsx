@@ -241,15 +241,19 @@ export default function DashboardStats({ solicitacoes, pontosColeta, veiculos }:
             onClick={handleExportHTML}
             className="flex items-center gap-1.5 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded-xl transition-all"
           >
-            <span>🖨️</span>
-            <span>Relatorio Imprimivel (HTML)</span>
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+            </svg>
+            <span>Relatório Imprimível (HTML)</span>
           </button>
           <button
             onClick={handleExportExcel}
             className="flex items-center gap-1.5 px-4 py-2 bg-green-700 hover:bg-green-600 text-white text-xs font-semibold rounded-xl transition-all"
           >
-            <span>📊</span>
-            <span>Relatorio Excel (CSV)</span>
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <span>Relatório Excel (CSV)</span>
           </button>
         </div>
       </div>
@@ -258,7 +262,9 @@ export default function DashboardStats({ solicitacoes, pontosColeta, veiculos }:
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-3xl">📋</span>
+            <svg className="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
             <span className="text-3xl font-extrabold text-gray-800">{total}</span>
           </div>
           <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mt-3">Total Solicitado</p>
@@ -266,7 +272,9 @@ export default function DashboardStats({ solicitacoes, pontosColeta, veiculos }:
 
         <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-3xl">🕐</span>
+            <svg className="w-8 h-8 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
             <span className="text-3xl font-extrabold text-amber-600">{counts.pendente}</span>
           </div>
           <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mt-3">Coletas Pendentes</p>
@@ -274,7 +282,9 @@ export default function DashboardStats({ solicitacoes, pontosColeta, veiculos }:
 
         <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-3xl">📅</span>
+            <svg className="w-8 h-8 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
             <span className="text-3xl font-extrabold text-purple-600">{counts.agendado}</span>
           </div>
           <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mt-3">Coletas Agendadas</p>
@@ -282,10 +292,12 @@ export default function DashboardStats({ solicitacoes, pontosColeta, veiculos }:
 
         <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-3xl">✅</span>
+            <svg className="w-8 h-8 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
             <span className="text-3xl font-extrabold text-green-600">{counts.concluido}</span>
           </div>
-          <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mt-3">Coletas Concluidas</p>
+          <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mt-3">Coletas Concluídas</p>
         </div>
       </div>
 
@@ -297,11 +309,21 @@ export default function DashboardStats({ solicitacoes, pontosColeta, veiculos }:
             <h3 className="font-bold text-gray-800 text-sm mb-4">Proporcao: PF vs PJ</h3>
             <div className="space-y-4">
               <div className="flex items-center justify-between text-xs font-medium text-gray-500">
-                <span>👤 Pessoa Fisica (PF)</span>
+                <span className="flex items-center gap-1.5">
+                  <svg className="w-3.5 h-3.5 text-sky-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                  Pessoa Física (PF)
+                </span>
                 <span className="text-gray-800 font-bold">{pf} coletas ({pctPF}%)</span>
               </div>
               <div className="flex items-center justify-between text-xs font-medium text-gray-500">
-                <span>🏢 Pessoa Juridica (PJ)</span>
+                <span className="flex items-center gap-1.5">
+                  <svg className="w-3.5 h-3.5 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5" />
+                  </svg>
+                  Pessoa Jurídica (PJ)
+                </span>
                 <span className="text-gray-800 font-bold">{pj} coletas ({pctPJ}%)</span>
               </div>
             </div>
